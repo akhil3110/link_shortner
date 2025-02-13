@@ -1,0 +1,25 @@
+name: Deploy on Staging
+
+on:
+  push:
+    branches:
+      - "main"
+
+jobs:
+  deploy:
+    name: Deploying Next.js App
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to EC2 Server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ec2-13-232-71-114.ap-south-1.compute.amazonaws.com
+          username: ubuntu
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd  cd link_shortner/ 
+            git pull origin main
+            npm install --omit=dev
+            npm run build
+            pm2 restart next-app
